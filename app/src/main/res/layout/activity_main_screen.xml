@@ -1,20 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.veloroute.duffylamb.veloroute.mainScreen"
-    tools:layout_editor_absoluteY="0dp"
-    tools:layout_editor_absoluteX="0dp">
-
+    tools:layout_editor_absoluteX="0dp"
+    tools:layout_editor_absoluteY="0dp">
 
     <fragment
         android:id="@+id/map_fragment"
         android:name="com.mapzen.android.graphics.MapFragment"
-        android:layout_width="604dp"
-        android:layout_height="827dp"
-        tools:layout_editor_absoluteY="0dp"
-        tools:layout_editor_absoluteX="-8dp" />
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        tools:layout="@layout/mz_fragment_map"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp" />
+
+
+    <SearchView
+        android:id="@+id/searchView1"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:iconifiedByDefault="false" />
+
 
 </android.support.constraint.ConstraintLayout>
