@@ -1,5 +1,6 @@
 package com.veloroute.duffylamb.veloroute;
 
+
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -41,11 +42,12 @@ public class mainScreen extends AppCompatActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_screen);
 
 		listView = (AutoCompleteListView) findViewById(R.id.list_view);
-		autoCompleteAdapter = new AutoCompleteAdapter(this,android.R.layout.simple_list_item_1);
+		autoCompleteAdapter = new AutoCompleteAdapter(this, android.R.layout.simple_list_item_1);
 		listView.setAdapter(autoCompleteAdapter);
 		peliasLocationProvider = new MapzenMapPeliasLocationProvider(this);
 
@@ -53,11 +55,12 @@ public class mainScreen extends AppCompatActivity {
 		mapFragment.getMapAsync(new OnMapReadyCallback() {
 			@Override
 			public void onMapReady(MapzenMap map) {
+
 				mainScreen.this.map = map;
 				map.setRotation(0f);
 				map.setZoom(0);
 				map.setTilt(0f);
-				map.setPosition(new LngLat(0,0));
+				map.setPosition(new LngLat(0, 0));
 				map.setZoomButtonsEnabled(true);
 				map.setCompassButtonEnabled(true);
 				checkRuntimePermissions();
@@ -76,6 +79,7 @@ public class mainScreen extends AppCompatActivity {
 
 	@Override
 	protected void onPause() {
+
 		super.onPause();
 		if (map.isMyLocationEnabled()) {
 			map.setMyLocationEnabled(false);
@@ -85,6 +89,7 @@ public class mainScreen extends AppCompatActivity {
 
 	@Override
 	protected void onResume() {
+
 		super.onResume();
 		if (enableLocationOnResume) {
 			map.setMyLocationEnabled(true);
@@ -93,18 +98,21 @@ public class mainScreen extends AppCompatActivity {
 
 	@Override
 	protected void onDestroy() {
+
 		super.onDestroy();
 	}
 
 
-	private void setupSearchView(PeliasSearchView searchView){
+	private void setupSearchView(PeliasSearchView searchView) {
+
 		searchView.setAutoCompleteListView(listView);
 		searchView.setPelias(mapzenSearch.getPelias());
 		searchView.setCallback(new Callback<Result>() {
 			@Override
 			public void onResponse(Call<Result> call, Response<Result> response) {
+
 				map.clearSearchResults();
-				for (Feature feature : response.body().getFeatures()){
+				for (Feature feature : response.body().getFeatures()) {
 					List<Double> coords = feature.geometry.coordinates;
 					LngLat point = new LngLat(coords.get(0), coords.get(1));
 					map.setPosition(point);
@@ -122,29 +130,30 @@ public class mainScreen extends AppCompatActivity {
 		searchView.setIconifiedByDefault(false);
 		searchView.setQueryHint(this.getString(R.string.search_hint));
 		searchView.setOnBackPressListener(new PeliasSearchView.OnBackPressListener() {
-			@Override public void onBackPressed() {
+			@Override
+			public void onBackPressed() {
+
 				map.clearSearchResults();
 			}
 		});
 	}
 
 
-
-
 	public void checkRuntimePermissions() {
+
 		if (hasLocationPermission()) {
 			map.setMyLocationEnabled(true);
-		}
-		else {
+		} else {
 			requestPermission();
 		}
 	}
 
-	private boolean hasLocationPermission() { // Returns true if permission is not granted #TheArtOftheBodge
-		return (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)== PackageManager.PERMISSION_GRANTED) && (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED);
+	private boolean hasLocationPermission() { // Returns true if permission is not granted
+		return (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) && (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED);
 	}
 
 	private void requestPermission() {
+
 		ActivityCompat.requestPermissions(this, new String[]{
 				Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION
 		}, PERMISSIONS_REQUEST_CODE);
@@ -154,9 +163,10 @@ public class mainScreen extends AppCompatActivity {
 	public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
 
 
-		for(int i = 0; i<grantResults.length; i++){
-			if(grantResults[i] == PackageManager.PERMISSION_DENIED)
+		for (int i = 0; i < grantResults.length; i++) {
+			if (grantResults[i] == PackageManager.PERMISSION_DENIED) {
 				return;
+			}
 		}
 		map.setMyLocationEnabled(true);
 	}
