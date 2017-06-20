@@ -7,20 +7,29 @@
     tools:layout_editor_absoluteX="0dp"
     tools:layout_editor_absoluteY="0dp">
 
+    <!--match_parent == fill_parent. Fill is deprecated.
+    match_parent cannot be used on children of a constraint layout.
+    0dp is equivalent, apparently
+     https://stackoverflow.com/questions/43452384/android-studio-keeps-replacing-match-parent-with-fixed-dp-value-->
+
     <fragment
         android:id="@+id/map_fragment"
         android:name="com.mapzen.android.graphics.MapFragment"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        tools:layout="@layout/mz_fragment_map"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp" />
+        tools:layout="@layout/mz_fragment_map" />
 
-    <SearchView
-        android:id="@+id/searchView1"
+    <com.mapzen.pelias.widget.AutoCompleteListView
+        android:id="@+id/list_view"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/mz_white"
+        android:visibility="gone" />
+
+    <com.mapzen.pelias.widget.PeliasSearchView
+        android:id="@+id/pelias_search_view"
         android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:iconifiedByDefault="false" />
-
+        android:layout_height="20dp"
+        />
 
 </android.support.constraint.ConstraintLayout>

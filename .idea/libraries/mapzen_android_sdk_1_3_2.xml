@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="mapzen-android-sdk-1.3.2">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.android/build-cache/4ffc9c896ee56b069c9ffe0427caafec0210fbc1/output/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.android/build-cache/4ffc9c896ee56b069c9ffe0427caafec0210fbc1/output/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.mapzen/mapzen-android-sdk/1.3.2/d32f04c56d8a4c702bd013928e62150974edfa88/mapzen-android-sdk-1.3.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
