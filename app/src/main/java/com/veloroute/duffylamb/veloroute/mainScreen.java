@@ -13,14 +13,23 @@ import com.mapzen.android.graphics.MapzenMap;
 import com.mapzen.android.graphics.MapzenMapPeliasLocationProvider;
 import com.mapzen.android.graphics.OnMapReadyCallback;
 import com.mapzen.android.graphics.model.CinnabarStyle;
+import com.mapzen.android.graphics.model.Marker;
+import com.mapzen.android.graphics.model.Polyline;
+import com.mapzen.android.routing.MapzenRouter;
 import com.mapzen.android.search.MapzenSearch;
+import com.mapzen.model.ValhallaLocation;
 import com.mapzen.pelias.gson.Feature;
 import com.mapzen.pelias.gson.Result;
 import com.mapzen.pelias.widget.AutoCompleteAdapter;
 import com.mapzen.pelias.widget.AutoCompleteListView;
 import com.mapzen.pelias.widget.PeliasSearchView;
 import com.mapzen.tangram.LngLat;
+import com.mapzen.valhalla.Route;
+import com.mapzen.valhalla.RouteCallback;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -38,6 +47,8 @@ public class mainScreen extends AppCompatActivity {
 	private MapzenMapPeliasLocationProvider peliasLocationProvider;
 	private MapzenSearch mapzenSearch;
 	private AutoCompleteAdapter autoCompleteAdapter;
+	private MapzenRouter router;
+
 
 
 	@Override
@@ -66,14 +77,23 @@ public class mainScreen extends AppCompatActivity {
 				checkRuntimePermissions();
 				map.setStyle(new CinnabarStyle());
 
+
 				peliasLocationProvider.setMapzenMap(map);
+
+				//Router test
+				addPointToRoute(new LngLat(-3.178037, 55.958714));
+				addPointToRoute(new LngLat(-3.321799, 55.911226));
+				router.fetch();
 			}
 		});
 
 		mapzenSearch = new MapzenSearch(this);
 		mapzenSearch.setLocationProvider(peliasLocationProvider);
 		PeliasSearchView searchView = (PeliasSearchView) findViewById(R.id.pelias_search_view);
+
 		setupSearchView(searchView);
+		setupRouter();
+
 
 	}
 
@@ -139,6 +159,38 @@ public class mainScreen extends AppCompatActivity {
 	}
 
 
+	private void setupRouter() {
+
+		router = new MapzenRouter(this);
+		router.setBiking(); //Possibly irrelevant, as will be overriden at a lower level
+
+		router.setCallback(new RouteCallback() {
+			@Override
+			public void success(@NotNull Route route) {
+
+				List<LngLat> coordinates = new ArrayList<>();
+				for (ValhallaLocation location : route.getGeometry()) {
+					coordinates.add(new LngLat(location.getLongitude(), location.getLatitude()));
+				}
+				Polyline polyline = new Polyline(coordinates);
+				map.addPolyline(polyline);
+			}
+
+			@Override
+			public void failure(int i) {
+				//TODO
+			}
+		});
+	}
+
+	private void addPointToRoute(LngLat lngLat) {
+
+		double[] point = {lngLat.latitude, lngLat.longitude};
+		router.setLocation(point);
+		Marker marker = new Marker(lngLat.longitude, lngLat.latitude);
+		map.addMarker(marker);
+	}
+
 	public void checkRuntimePermissions() {
 
 		if (hasLocationPermission()) {
@@ -148,7 +200,7 @@ public class mainScreen extends AppCompatActivity {
 		}
 	}
 
-	private boolean hasLocationPermission() { // Returns true if permission is not granted
+	private boolean hasLocationPermission() {
 		return (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) && (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED);
 	}
 
