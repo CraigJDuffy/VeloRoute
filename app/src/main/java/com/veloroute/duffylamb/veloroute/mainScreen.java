@@ -163,6 +163,7 @@ public class mainScreen extends AppCompatActivity {
 
 		router = new MapzenRouter(this);
 		router.setBiking(); //Possibly irrelevant, as will be overriden at a lower level
+		router.getRouter().setHttpHandler(new routeOptions());
 
 		router.setCallback(new RouteCallback() {
 			@Override
