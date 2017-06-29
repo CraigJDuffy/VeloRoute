@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.mapzen.android.graphics.MapFragment;
 import com.mapzen.android.graphics.MapzenMap;
@@ -163,7 +164,7 @@ public class mainScreen extends AppCompatActivity {
 
 		router = new MapzenRouter(this);
 		router.setBiking(); //Possibly irrelevant, as will be overriden at a lower level
-		router.getRouter().setHttpHandler(new routeOptions());
+		router.getRouter().setHttpHandler(new routeOptions(this));
 
 		router.setCallback(new RouteCallback() {
 			@Override
@@ -179,7 +180,8 @@ public class mainScreen extends AppCompatActivity {
 
 			@Override
 			public void failure(int i) {
-				//TODO
+
+				Log.e("Router Callback", "failure: ");
 			}
 		});
 	}
