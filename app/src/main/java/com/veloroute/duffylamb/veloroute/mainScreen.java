@@ -82,7 +82,7 @@ public class mainScreen extends AppCompatActivity {
 				peliasLocationProvider.setMapzenMap(map);
 
 				//Router test
-				addPointToRoute(new LngLat(-3.178037, 55.958714));
+				addPointToRoute(new LngLat(-3.220525, 55.943011));
 				addPointToRoute(new LngLat(-3.321799, 55.911226));
 				router.fetch();
 			}
@@ -93,7 +93,7 @@ public class mainScreen extends AppCompatActivity {
 		PeliasSearchView searchView = (PeliasSearchView) findViewById(R.id.pelias_search_view);
 
 		setupSearchView(searchView);
-		setupRouter();
+		setupRouter(new bicycleCostings());
 
 
 	}
@@ -160,11 +160,12 @@ public class mainScreen extends AppCompatActivity {
 	}
 
 
-	private void setupRouter() {
+	private void setupRouter(bicycleCostings bikeCosts) {
 
 		router = new MapzenRouter(this);
 		router.setBiking(); //Possibly irrelevant, as will be overriden at a lower level
-		router.getRouter().setHttpHandler(new routeOptions(this));
+		router.getRouter().setHttpHandler(new routeOptions(this, bikeCosts));
+
 
 		router.setCallback(new RouteCallback() {
 			@Override

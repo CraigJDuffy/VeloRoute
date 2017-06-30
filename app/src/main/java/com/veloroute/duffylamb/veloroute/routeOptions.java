@@ -33,7 +33,7 @@ public class routeOptions extends TurnByTurnHttpHandler {
 		setBikeCost(bikeCost);
 	}
 
-	public void setBikeCost(bicycleCostings bikeCost) {
+	private void setBikeCost(bicycleCostings bikeCost) {
 
 		this.bikeCost = bikeCost;
 	}
