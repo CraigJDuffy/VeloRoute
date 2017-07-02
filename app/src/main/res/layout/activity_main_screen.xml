@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.veloroute.duffylamb.veloroute.mainScreen"
-    tools:layout_editor_absoluteX="0dp"
-    tools:layout_editor_absoluteY="0dp">
+											 xmlns:app="http://schemas.android.com/apk/res-auto"
+											 xmlns:tools="http://schemas.android.com/tools"
+											 android:layout_width="match_parent"
+											 android:layout_height="match_parent"
+											 tools:context="com.veloroute.duffylamb.veloroute.mainScreen"
+											 tools:layout_editor_absoluteX="0dp"
+											 tools:layout_editor_absoluteY="0dp">
 
     <!--match_parent == fill_parent. Fill is deprecated.
     match_parent cannot be used on children of a constraint layout.
@@ -20,16 +21,28 @@
         tools:layout="@layout/mz_fragment_map" />
 
     <com.mapzen.pelias.widget.AutoCompleteListView
-        android:id="@+id/list_view"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:background="@color/mz_white"
-        android:visibility="gone" />
+		android:id="@+id/list_view"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:background="@color/mz_white"
+		android:visibility="gone"
+		android:layout_marginTop="@dimen/search_view_height"/>
 
     <com.mapzen.pelias.widget.PeliasSearchView
-        android:id="@+id/pelias_search_view"
-        android:layout_width="0dp"
-        android:layout_height="20dp"
+		android:id="@+id/pelias_search_view"
+		android:layout_width="300dp"
+		android:layout_height="@dimen/search_view_height"
+		android:layout_marginTop="@dimen/mz_find_me_button_margin_top"
         />
+
+	<Button
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="Fetch"
+		android:layout_marginLeft="@dimen/mz_compass_button_margin_left"
+		android:layout_marginBottom="@dimen/mz_zoom_out_button_margin_bottom"
+		app:layout_constraintLeft_toLeftOf="@id/map_fragment"
+		app:layout_constraintBottom_toBottomOf="@id/map_fragment"
+		android:id="@+id/BtnFetch"/>
 
 </android.support.constraint.ConstraintLayout>

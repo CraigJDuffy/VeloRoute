@@ -8,4 +8,6 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+	<dimen name="search_view_height">30dp</dimen>
+
 </resources>

@@ -8,6 +8,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import com.mapzen.android.graphics.MapFragment;
 import com.mapzen.android.graphics.MapzenMap;
@@ -49,7 +51,7 @@ public class mainScreen extends AppCompatActivity {
 	private MapzenSearch mapzenSearch;
 	private AutoCompleteAdapter autoCompleteAdapter;
 	private MapzenRouter router;
-
+	private Button BtnFetch;
 
 
 	@Override
@@ -81,10 +83,10 @@ public class mainScreen extends AppCompatActivity {
 
 				peliasLocationProvider.setMapzenMap(map);
 
-				//Router test
-				addPointToRoute(new LngLat(-3.220525, 55.943011));
-				addPointToRoute(new LngLat(-3.321799, 55.911226));
-				router.fetch();
+//				//Router test
+//				addPointToRoute(new LngLat(-3.220525, 55.943011));
+//				addPointToRoute(new LngLat(-3.321799, 55.911226));
+//				router.fetch();
 			}
 		});
 
@@ -94,6 +96,18 @@ public class mainScreen extends AppCompatActivity {
 
 		setupSearchView(searchView);
 		setupRouter(new bicycleCostings());
+
+		BtnFetch = (Button) findViewById(R.id.BtnFetch);
+		BtnFetch.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+
+				map.removeMarker();
+				map.removePolyline();
+				router.fetch();
+			}
+		});
 
 
 	}
@@ -123,7 +137,6 @@ public class mainScreen extends AppCompatActivity {
 		super.onDestroy();
 	}
 
-
 	private void setupSearchView(PeliasSearchView searchView) {
 
 		searchView.setAutoCompleteListView(listView);
@@ -139,6 +152,7 @@ public class mainScreen extends AppCompatActivity {
 					map.setPosition(point);
 					map.drawSearchResult(point);
 					map.setZoom(16);
+					addPointToRoute(point);
 				}
 			}
 
@@ -181,7 +195,7 @@ public class mainScreen extends AppCompatActivity {
 
 			@Override
 			public void failure(int i) {
-
+				// TODO: 02/07/2017
 				Log.e("Router Callback", "failure: ");
 			}
 		});
@@ -191,8 +205,7 @@ public class mainScreen extends AppCompatActivity {
 
 		double[] point = {lngLat.latitude, lngLat.longitude};
 		router.setLocation(point);
-		Marker marker = new Marker(lngLat.longitude, lngLat.latitude);
-		map.addMarker(marker);
+		map.addMarker(new Marker(lngLat.longitude, lngLat.latitude));
 	}
 
 	public void checkRuntimePermissions() {
