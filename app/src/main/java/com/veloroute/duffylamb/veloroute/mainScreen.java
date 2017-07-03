@@ -2,6 +2,7 @@ package com.veloroute.duffylamb.veloroute;
 
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -52,6 +53,9 @@ public class mainScreen extends AppCompatActivity {
 	private AutoCompleteAdapter autoCompleteAdapter;
 	private MapzenRouter router;
 	private Button BtnFetch;
+	private Button BtnSet;
+	private int count = 0; // hack
+
 
 
 	@Override
@@ -74,7 +78,7 @@ public class mainScreen extends AppCompatActivity {
 				map.setRotation(0f);
 				map.setZoom(0);
 				map.setTilt(0f);
-				map.setPosition(new LngLat(0, 0));
+				map.setPosition(new LngLat(51.476852, -0.000500));
 				map.setZoomButtonsEnabled(true);
 				map.setCompassButtonEnabled(true);
 				checkRuntimePermissions();
@@ -83,10 +87,6 @@ public class mainScreen extends AppCompatActivity {
 
 				peliasLocationProvider.setMapzenMap(map);
 
-//				//Router test
-//				addPointToRoute(new LngLat(-3.220525, 55.943011));
-//				addPointToRoute(new LngLat(-3.321799, 55.911226));
-//				router.fetch();
 			}
 		});
 
@@ -97,15 +97,36 @@ public class mainScreen extends AppCompatActivity {
 		setupSearchView(searchView);
 		setupRouter(new bicycleCostings());
 
+		BtnSet = (Button) findViewById(R.id.BtnSet);
+
 		BtnFetch = (Button) findViewById(R.id.BtnFetch);
+
+
+		BtnSet.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Intent myIntent = new Intent(mainScreen.this,
+						settingsScreen.class);
+				startActivity(myIntent);
+			}
+		});
+
 		BtnFetch.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 
+				if (count > 0) {
 				map.removeMarker();
 				map.removePolyline();
-				router.fetch();
+					count++;
+					router.fetch();
+				} else {
+					count++;
+					router.fetch();
+				}
+
 			}
 		});
 

@@ -18,31 +18,43 @@
         android:name="com.mapzen.android.graphics.MapFragment"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        tools:layout="@layout/mz_fragment_map" />
+        tools:layout="@layout/mz_fragment_map"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="107dp" />
 
     <com.mapzen.pelias.widget.AutoCompleteListView
 		android:id="@+id/list_view"
 		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"
+        android:layout_height="250dp"
+        android:layout_marginTop="@dimen/search_view_height"
 		android:background="@color/mz_white"
-		android:visibility="gone"
-		android:layout_marginTop="@dimen/search_view_height"/>
+        android:visibility="gone" />
 
     <com.mapzen.pelias.widget.PeliasSearchView
 		android:id="@+id/pelias_search_view"
 		android:layout_width="300dp"
 		android:layout_height="@dimen/search_view_height"
 		android:layout_marginTop="@dimen/mz_find_me_button_margin_top"
+        tools:layout_editor_absoluteY="50dp"
         />
 
 	<Button
+        android:id="@+id/BtnFetch"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:text="Fetch"
-		android:layout_marginLeft="@dimen/mz_compass_button_margin_left"
 		android:layout_marginBottom="@dimen/mz_zoom_out_button_margin_bottom"
-		app:layout_constraintLeft_toLeftOf="@id/map_fragment"
+        android:layout_marginLeft="@dimen/mz_compass_button_margin_left"
+        android:text="Fetch"
 		app:layout_constraintBottom_toBottomOf="@id/map_fragment"
-		android:id="@+id/BtnFetch"/>
+        app:layout_constraintLeft_toLeftOf="@id/map_fragment" />
 
+    <Button
+        android:id="@+id/BtnSet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="254dp"
+        android:text="Settings"
+        app:layout_constraintBottom_toBottomOf="@id/map_fragment"
+        app:layout_constraintLeft_toLeftOf="@id/map_fragment" />
 </android.support.constraint.ConstraintLayout>

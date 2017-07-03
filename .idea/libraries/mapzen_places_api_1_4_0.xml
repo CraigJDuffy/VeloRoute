@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="mapzen-places-api-1.4.0">
     <CLASSES>
-      <root url="file://$USER_HOME$/.android/build-cache/65df32b8786e2d6688136b1b887e22ae16a92348/output/res" />
-      <root url="jar://$USER_HOME$/.android/build-cache/65df32b8786e2d6688136b1b887e22ae16a92348/output/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.android/build-cache/e1f8988fb24bc04b1a1aabf0faa17ed25911a49d/output/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.android/build-cache/e1f8988fb24bc04b1a1aabf0faa17ed25911a49d/output/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
