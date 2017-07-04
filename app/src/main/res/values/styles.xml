@@ -9,5 +9,5 @@
     </style>
 
 	<dimen name="search_view_height">30dp</dimen>
-
+    <dimen name="settings_view_margin_right">60dp</dimen>
 </resources>
