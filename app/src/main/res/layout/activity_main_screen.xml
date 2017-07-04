@@ -8,51 +8,88 @@
 											 tools:layout_editor_absoluteX="0dp"
 											 tools:layout_editor_absoluteY="0dp">
 
-    <!--match_parent == fill_parent. Fill is deprecated.
-    match_parent cannot be used on children of a constraint layout.
-    0dp is equivalent, apparently
-     https://stackoverflow.com/questions/43452384/android-studio-keeps-replacing-match-parent-with-fixed-dp-value-->
+	<!--match_parent == fill_parent. Fill is deprecated.
+	match_parent cannot be used on children of a constraint layout.
+	0dp is equivalent, apparently
+	 https://stackoverflow.com/questions/43452384/android-studio-keeps-replacing-match-parent-with-fixed-dp-value-->
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:orientation="vertical">
 
-    <fragment
-        android:id="@+id/map_fragment"
-        android:name="com.mapzen.android.graphics.MapFragment"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        tools:layout="@layout/mz_fragment_map"
-		/>
+		<android.support.constraint.ConstraintLayout
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:layout_weight="1"
+			>
 
-    <com.mapzen.pelias.widget.AutoCompleteListView
-		android:id="@+id/list_view"
-		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"
-		android:layout_marginTop="@dimen/search_view_height"
-		android:background="@color/mz_white"
-		android:visibility="gone" />
+			<fragment
+				android:id="@+id/map_fragment"
+				android:name="com.mapzen.android.graphics.MapFragment"
+				android:layout_width="fill_parent"
+				android:layout_height="fill_parent"
+				tools:layout="@layout/mz_fragment_map"
+				/>
 
-    <com.mapzen.pelias.widget.PeliasSearchView
-		android:id="@+id/pelias_search_view"
-		android:layout_width="300dp"
-		android:layout_height="@dimen/search_view_height"
-		android:layout_marginTop="@dimen/mz_find_me_button_margin_top"
-        />
+			<com.mapzen.pelias.widget.AutoCompleteListView
+				android:id="@+id/list_view"
+				android:layout_width="fill_parent"
+				android:layout_height="fill_parent"
+				android:layout_marginTop="@dimen/search_view_height"
+				android:background="@color/mz_white"
+				android:visibility="gone"/>
 
-	<Button
-        android:id="@+id/BtnFetch"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginBottom="@dimen/mz_zoom_out_button_margin_bottom"
-        android:layout_marginLeft="@dimen/mz_compass_button_margin_left"
-        android:text="Fetch"
-		app:layout_constraintBottom_toBottomOf="@id/map_fragment"
-        app:layout_constraintLeft_toLeftOf="@id/map_fragment" />
+			<com.mapzen.pelias.widget.PeliasSearchView
+				android:id="@+id/pelias_search_view"
+				android:layout_width="300dp"
+				android:layout_height="@dimen/search_view_height"
+				android:layout_marginTop="@dimen/mz_find_me_button_margin_top"
+				/>
 
-    <Button
-		android:id="@+id/BtnSet"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginBottom="@dimen/mz_zoom_out_button_margin_bottom"
-		android:layout_marginRight="@dimen/settings_view_margin_right"
-		android:text="Settings"
-		app:layout_constraintBottom_toBottomOf="@id/map_fragment"
-		app:layout_constraintRight_toRightOf="@id/map_fragment"/>
+			<Button
+				android:id="@+id/btn_fetch"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginBottom="@dimen/mz_zoom_out_button_margin_bottom"
+				android:layout_marginLeft="@dimen/mz_compass_button_margin_left"
+				android:text="Fetch"
+				app:layout_constraintBottom_toBottomOf="@id/map_fragment"
+				app:layout_constraintLeft_toLeftOf="@id/map_fragment"/>
+
+			<Button
+				android:id="@+id/btn_set"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginBottom="@dimen/mz_zoom_out_button_margin_bottom"
+				android:layout_marginRight="@dimen/settings_view_margin_right"
+				android:text="Settings"
+				app:layout_constraintBottom_toBottomOf="@id/map_fragment"
+				app:layout_constraintRight_toRightOf="@id/map_fragment"/>
+		</android.support.constraint.ConstraintLayout>
+
+		<LinearLayout
+			android:id="@+id/route_planner"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:visibility="gone"
+			>
+
+			<Button
+				android:id="@+id/btn_direction_to"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/direction_to"
+				/>
+
+			<Button
+				android:id="@+id/btn_direction_from"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/direction_from"
+				/>
+
+
+		</LinearLayout>
+
+	</LinearLayout>
 </android.support.constraint.ConstraintLayout>

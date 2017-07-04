@@ -15,27 +15,27 @@ import okhttp3.Response;
  * Created by Tommy on 28/06/2017.
  */
 
-public class routeOptions extends TurnByTurnHttpHandler {
+public class RouteOptions extends TurnByTurnHttpHandler {
 
-	public bicycleCostings bikeCost;
+	private BicycleCostings bikeCost;
 	private Context context;
 
-	public routeOptions(Context context) {
+	public RouteOptions(Context context) {
 
 		this.context = context;
-		setBikeCost(new bicycleCostings());
+		setBikeCost(new BicycleCostings());
 
 	}
 
-	public routeOptions(Context context, bicycleCostings bikeCost) {
 
-		this.context = context;
-		setBikeCost(bikeCost);
-	}
-
-	private void setBikeCost(bicycleCostings bikeCost) {
+	public void setBikeCost(BicycleCostings bikeCost) {
 
 		this.bikeCost = bikeCost;
+	}
+
+	public BicycleCostings getBikeCost() {
+
+		return this.bikeCost;
 	}
 
 	@Override

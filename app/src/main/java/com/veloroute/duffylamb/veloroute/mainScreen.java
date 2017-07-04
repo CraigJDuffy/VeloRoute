@@ -11,15 +11,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import com.mapzen.android.graphics.MapFragment;
 import com.mapzen.android.graphics.MapzenMap;
 import com.mapzen.android.graphics.MapzenMapPeliasLocationProvider;
 import com.mapzen.android.graphics.OnMapReadyCallback;
 import com.mapzen.android.graphics.model.CinnabarStyle;
-import com.mapzen.android.graphics.model.Marker;
 import com.mapzen.android.graphics.model.Polyline;
-import com.mapzen.android.routing.MapzenRouter;
 import com.mapzen.android.search.MapzenSearch;
 import com.mapzen.model.ValhallaLocation;
 import com.mapzen.pelias.gson.Feature;
@@ -50,12 +49,11 @@ public class mainScreen extends AppCompatActivity {
 	private AutoCompleteListView listView;
 	private MapzenMapPeliasLocationProvider peliasLocationProvider;
 	private MapzenSearch mapzenSearch;
-	private AutoCompleteAdapter autoCompleteAdapter;
-	private MapzenRouter router;
+
+	private RoutePlanner routePlanner;
 	private Button BtnFetch;
 	private Button BtnSet;
-	private int count = 0; // hack
-
+	//private int count = 0; // hack
 
 
 	@Override
@@ -65,7 +63,7 @@ public class mainScreen extends AppCompatActivity {
 		setContentView(R.layout.activity_main_screen);
 
 		listView = (AutoCompleteListView) findViewById(R.id.list_view);
-		autoCompleteAdapter = new AutoCompleteAdapter(this, android.R.layout.simple_list_item_1);
+		AutoCompleteAdapter autoCompleteAdapter = new AutoCompleteAdapter(this, android.R.layout.simple_list_item_1);
 		listView.setAdapter(autoCompleteAdapter);
 		peliasLocationProvider = new MapzenMapPeliasLocationProvider(this);
 
@@ -95,41 +93,40 @@ public class mainScreen extends AppCompatActivity {
 		PeliasSearchView searchView = (PeliasSearchView) findViewById(R.id.pelias_search_view);
 
 		setupSearchView(searchView);
-		setupRouter(new bicycleCostings());
+		setupRoutePlanner();
 
-		BtnSet = (Button) findViewById(R.id.BtnSet);
-
-		BtnFetch = (Button) findViewById(R.id.BtnFetch);
+		BtnSet = (Button) findViewById(R.id.btn_set);
+		BtnFetch = (Button) findViewById(R.id.btn_fetch);
 
 
 		BtnSet.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
+
 				Intent myIntent = new Intent(mainScreen.this,
 						settingsScreen.class);
 				startActivity(myIntent);
 			}
 		});
 
-		BtnFetch.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-
-				if (count > 0) {
-				map.removeMarker();
-				map.removePolyline();
-					count++;
-					router.fetch();
-				} else {
-					count++;
-					router.fetch();
-				}
-
-			}
-		});
-
+//		BtnFetch.setOnClickListener(new View.OnClickListener() {
+//
+//			@Override
+//			public void onClick(View v) {
+//
+//				if (count > 0) {
+//					map.removeMarker();
+//					map.removePolyline();
+//					count++;
+//					router.fetch();
+//				} else {
+//					count++;
+//					router.fetch();
+//				}
+//
+//			}
+//		});
 
 	}
 
@@ -168,12 +165,13 @@ public class mainScreen extends AppCompatActivity {
 
 				map.clearSearchResults();
 				for (Feature feature : response.body().getFeatures()) {
-					List<Double> coords = feature.geometry.coordinates;
-					LngLat point = new LngLat(coords.get(0), coords.get(1));
-					map.setPosition(point);
-					map.drawSearchResult(point);
-					map.setZoom(16);
-					addPointToRoute(point);
+//					List<Double> coords = feature.geometry.coordinates;
+//					LngLat point = new LngLat(coords.get(0), coords.get(1));
+					showSearchResult(feature);
+//					map.setPosition(point);
+//					map.drawSearchResult(point);
+//					map.setZoom(16);
+//					addPointToRoute(point);
 				}
 			}
 
@@ -185,24 +183,30 @@ public class mainScreen extends AppCompatActivity {
 
 		searchView.setIconifiedByDefault(false);
 		searchView.setQueryHint(this.getString(R.string.search_hint));
-		searchView.setOnBackPressListener(new PeliasSearchView.OnBackPressListener() {
-			@Override
-			public void onBackPressed() {
 
-				map.clearSearchResults();
+
+		searchView.setOnPeliasFocusChangeListener(new View.OnFocusChangeListener() {
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+
+				if (hasFocus) {
+					BtnFetch.setVisibility(View.INVISIBLE);
+					BtnSet.setVisibility(View.INVISIBLE);
+					routePlanner.smartHide();
+				} else {
+					BtnFetch.setVisibility(View.VISIBLE);
+					BtnSet.setVisibility(View.VISIBLE);
+					routePlanner.smartShow();
+				}
 			}
 		});
 	}
 
 
-	private void setupRouter(bicycleCostings bikeCosts) {
+	private void setupRoutePlanner() {
 
-		router = new MapzenRouter(this);
-		router.setBiking(); //Possibly irrelevant, as will be overriden at a lower level
-		router.getRouter().setHttpHandler(new routeOptions(this, bikeCosts));
-
-
-		router.setCallback(new RouteCallback() {
+		this.routePlanner = new RoutePlanner((LinearLayout) findViewById(R.id.route_planner));
+		routePlanner.setRouteCallback(new RouteCallback() {
 			@Override
 			public void success(@NotNull Route route) {
 
@@ -220,14 +224,27 @@ public class mainScreen extends AppCompatActivity {
 				Log.e("Router Callback", "failure: ");
 			}
 		});
+
 	}
 
-	private void addPointToRoute(LngLat lngLat) {
 
-		double[] point = {lngLat.latitude, lngLat.longitude};
-		router.setLocation(point);
-		map.addMarker(new Marker(lngLat.longitude, lngLat.latitude));
+	private void showSearchResult(Feature feature) {
+
+		LngLat point = new LngLat(feature.geometry.coordinates.get(0), feature.geometry.coordinates.get(1));
+		map.setPosition(point);
+		map.clearSearchResults();
+		map.drawSearchResult(point);
+		map.setZoom(16);
+		routePlanner.setVisibility(View.VISIBLE);
+		//TODO If the search result is added to the route, place a marker there and remove search result.
 	}
+
+//	private void addPointToRoute(LngLat lngLat) {
+//
+//		double[] point = {lngLat.latitude, lngLat.longitude};
+//		router.setLocation(point);
+//		map.addMarker(new Marker(lngLat.longitude, lngLat.latitude));
+//	}
 
 	public void checkRuntimePermissions() {
 
@@ -239,6 +256,7 @@ public class mainScreen extends AppCompatActivity {
 	}
 
 	private boolean hasLocationPermission() {
+
 		return (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) && (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED);
 	}
 

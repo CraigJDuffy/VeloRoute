@@ -6,7 +6,7 @@ package com.veloroute.duffylamb.veloroute;
  */
 
 
-public class bicycleCostings {
+public class BicycleCostings {
 
 	/**
 	 * Enumerate type of bikes recognised by the route finding API. Note that CITY is equivalent to a 'hybrid' bike.
@@ -25,9 +25,9 @@ public class bicycleCostings {
 	/**
 	 * Constructor which uses the default route finding API values for bicycle costings
 	 */
-	public bicycleCostings() {
+	public BicycleCostings() {
 
-		this(bicycleCostings.BikeType.ROAD, 25, 0.2, 0.8);
+		this(BicycleCostings.BikeType.ROAD, 25, 0.2, 0.8);
 	}
 
 	/**
@@ -38,9 +38,9 @@ public class bicycleCostings {
 	 * @param use_hills     Desire to tackle hills on route. Range from 0 to 1, where 0 will avoid inclines and 1 denotes no aversion to steep inclines.
 	 * @param use_roads     The cyclist's propensity to use roads alongside traffic. Range from 0 to 1, where 0 will avoid roads where possible, and 1 indicates comfort on roads.
 	 *
-	 * @see com.veloroute.duffylamb.veloroute.bicycleCostings.BikeType
+	 * @see BicycleCostings.BikeType
 	 */
-	public bicycleCostings(BikeType bicycle_type, int cycling_speed, double use_hills, double use_roads) {
+	public BicycleCostings(BikeType bicycle_type, int cycling_speed, double use_hills, double use_roads) {
 
 		setBicycle_type(bicycle_type);
 		setCycling_speed(cycling_speed);
