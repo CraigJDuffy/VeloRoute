@@ -27,7 +27,7 @@ public class bicycleCostings {
 	 */
 	public bicycleCostings() {
 
-		this(bicycleCostings.BikeType.ROAD, 25, 0.5, 0.5);
+		this(bicycleCostings.BikeType.ROAD, 25, 0.2, 0.8);
 	}
 
 	/**

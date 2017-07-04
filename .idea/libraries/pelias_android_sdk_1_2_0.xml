@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="pelias-android-sdk-1.2.0">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.android/build-cache/a06c2d6204f7d29b2bd10817ba047fd8c4faa502/output/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.android/build-cache/a06c2d6204f7d29b2bd10817ba047fd8c4faa502/output/res" />
+      <root url="file://$USER_HOME$/.android/build-cache/df8f2aa1a686096426c1f0a7e39943ddea3afdbb/output/res" />
+      <root url="jar://$USER_HOME$/.android/build-cache/df8f2aa1a686096426c1f0a7e39943ddea3afdbb/output/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
