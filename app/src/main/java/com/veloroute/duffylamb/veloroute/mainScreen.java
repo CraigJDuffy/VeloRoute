@@ -48,7 +48,6 @@ public class mainScreen extends AppCompatActivity {
 
 	private AutoCompleteListView listView;
 	private MapzenMapPeliasLocationProvider peliasLocationProvider;
-	private MapzenSearch mapzenSearch;
 
 	private RoutePlanner routePlanner;
 	private Button BtnFetch;
@@ -79,20 +78,18 @@ public class mainScreen extends AppCompatActivity {
 				map.setPosition(new LngLat(51.476852, -0.000500));
 				map.setZoomButtonsEnabled(true);
 				map.setCompassButtonEnabled(true);
-				checkRuntimePermissions();
+
+
+				checkLocationPermissions();
 				map.setStyle(new CinnabarStyle());
 
-
 				peliasLocationProvider.setMapzenMap(map);
-
+				routePlanner.setMap(map);
 			}
 		});
 
-		mapzenSearch = new MapzenSearch(this);
-		mapzenSearch.setLocationProvider(peliasLocationProvider);
-		PeliasSearchView searchView = (PeliasSearchView) findViewById(R.id.pelias_search_view);
 
-		setupSearchView(searchView);
+		setupSearchView();
 		setupRoutePlanner();
 
 		BtnSet = (Button) findViewById(R.id.btn_set);
@@ -155,7 +152,11 @@ public class mainScreen extends AppCompatActivity {
 		super.onDestroy();
 	}
 
-	private void setupSearchView(PeliasSearchView searchView) {
+	private void setupSearchView() {
+
+		MapzenSearch mapzenSearch = new MapzenSearch(this);
+		mapzenSearch.setLocationProvider(peliasLocationProvider);
+		PeliasSearchView searchView = (PeliasSearchView) findViewById(R.id.pelias_search_view);
 
 		searchView.setAutoCompleteListView(listView);
 		searchView.setPelias(mapzenSearch.getPelias());
@@ -165,13 +166,7 @@ public class mainScreen extends AppCompatActivity {
 
 				map.clearSearchResults();
 				for (Feature feature : response.body().getFeatures()) {
-//					List<Double> coords = feature.geometry.coordinates;
-//					LngLat point = new LngLat(coords.get(0), coords.get(1));
 					showSearchResult(feature);
-//					map.setPosition(point);
-//					map.drawSearchResult(point);
-//					map.setZoom(16);
-//					addPointToRoute(point);
 				}
 			}
 
@@ -221,7 +216,7 @@ public class mainScreen extends AppCompatActivity {
 			@Override
 			public void failure(int i) {
 				// TODO: 02/07/2017
-				Log.e("Router Callback", "failure: ");
+				Log.e("Router Callback", "failure: " + Integer.toString(i));
 			}
 		});
 
@@ -236,23 +231,17 @@ public class mainScreen extends AppCompatActivity {
 		map.drawSearchResult(point);
 		map.setZoom(16);
 		routePlanner.setVisibility(View.VISIBLE);
-		//TODO If the search result is added to the route, place a marker there and remove search result.
+		routePlanner.setCurrentLocation(feature);
 	}
 
-//	private void addPointToRoute(LngLat lngLat) {
-//
-//		double[] point = {lngLat.latitude, lngLat.longitude};
-//		router.setLocation(point);
-//		map.addMarker(new Marker(lngLat.longitude, lngLat.latitude));
-//	}
-
-	public void checkRuntimePermissions() {
+	public void checkLocationPermissions() {
 
 		if (hasLocationPermission()) {
 			map.setMyLocationEnabled(true);
 		} else {
 			requestPermission();
 		}
+
 	}
 
 	private boolean hasLocationPermission() {
