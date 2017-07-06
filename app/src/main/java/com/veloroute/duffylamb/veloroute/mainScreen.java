@@ -50,9 +50,7 @@ public class mainScreen extends AppCompatActivity {
 	private MapzenMapPeliasLocationProvider peliasLocationProvider;
 
 	private RoutePlanner routePlanner;
-	private Button BtnFetch;
 	private Button BtnSet;
-	//private int count = 0; // hack
 
 
 	@Override
@@ -93,8 +91,6 @@ public class mainScreen extends AppCompatActivity {
 		setupRoutePlanner();
 
 		BtnSet = (Button) findViewById(R.id.btn_set);
-		BtnFetch = (Button) findViewById(R.id.btn_fetch);
-
 
 		BtnSet.setOnClickListener(new View.OnClickListener() {
 
@@ -106,24 +102,6 @@ public class mainScreen extends AppCompatActivity {
 				startActivity(myIntent);
 			}
 		});
-
-//		BtnFetch.setOnClickListener(new View.OnClickListener() {
-//
-//			@Override
-//			public void onClick(View v) {
-//
-//				if (count > 0) {
-//					map.removeMarker();
-//					map.removePolyline();
-//					count++;
-//					router.fetch();
-//				} else {
-//					count++;
-//					router.fetch();
-//				}
-//
-//			}
-//		});
 
 	}
 
@@ -185,11 +163,9 @@ public class mainScreen extends AppCompatActivity {
 			public void onFocusChange(View v, boolean hasFocus) {
 
 				if (hasFocus) {
-					BtnFetch.setVisibility(View.INVISIBLE);
 					BtnSet.setVisibility(View.INVISIBLE);
 					routePlanner.smartHide();
 				} else {
-					BtnFetch.setVisibility(View.VISIBLE);
 					BtnSet.setVisibility(View.VISIBLE);
 					routePlanner.smartShow();
 				}
@@ -230,7 +206,7 @@ public class mainScreen extends AppCompatActivity {
 		map.clearSearchResults();
 		map.drawSearchResult(point);
 		map.setZoom(16);
-		routePlanner.setVisibility(View.VISIBLE);
+		routePlanner.enable();
 		routePlanner.setCurrentLocation(feature);
 	}
 

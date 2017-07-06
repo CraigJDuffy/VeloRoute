@@ -48,16 +48,6 @@
 				/>
 
 			<Button
-				android:id="@+id/btn_fetch"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_marginBottom="@dimen/mz_zoom_out_button_margin_bottom"
-				android:layout_marginLeft="@dimen/mz_compass_button_margin_left"
-				android:text="Fetch"
-				app:layout_constraintBottom_toBottomOf="@id/map_fragment"
-				app:layout_constraintLeft_toLeftOf="@id/map_fragment"/>
-
-			<Button
 				android:id="@+id/btn_set"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
@@ -66,6 +56,75 @@
 				android:text="Settings"
 				app:layout_constraintBottom_toBottomOf="@id/map_fragment"
 				app:layout_constraintRight_toRightOf="@id/map_fragment"/>
+		</android.support.constraint.ConstraintLayout>
+
+		<android.support.constraint.ConstraintLayout
+			android:id="@+id/location_container_start"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:visibility="gone"
+			>
+
+			<ImageView
+				android:id="@+id/location_pointer_start"
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent"
+				android:src="@mipmap/ic_location_start"
+				app:layout_constraintLeft_toLeftOf="parent"
+				/>
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/location_placeholder"
+				android:textSize="@dimen/location_size_large"
+				android:paddingLeft="@dimen/mz_compass_button_margin_left"
+				app:layout_constraintLeft_toRightOf="@id/location_pointer_start"
+				/>
+
+			<ImageButton
+				android:id="@+id/location_gps_start"
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent"
+				app:layout_constraintRight_toRightOf="parent"
+				android:src="@mipmap/ic_my_location"
+				android:background="@color/defaultWhite"
+				/>
+		</android.support.constraint.ConstraintLayout>
+
+		<View style="@style/HorizontalBreakline"/>
+
+		<android.support.constraint.ConstraintLayout
+			android:id="@+id/location_container_end"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:visibility="gone"
+			>
+
+			<ImageView
+				android:id="@+id/location_pointer_end"
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent"
+				android:src="@mipmap/ic_location_end"
+				app:layout_constraintLeft_toLeftOf="parent"
+				/>
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/location_placeholder"
+				android:textSize="@dimen/location_size_large"
+				android:paddingLeft="@dimen/mz_compass_button_margin_left"
+				app:layout_constraintLeft_toRightOf="@id/location_pointer_end"
+				/>
+
+			<ImageButton
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent"
+				app:layout_constraintRight_toRightOf="parent"
+				android:src="@mipmap/ic_my_location"
+				android:background="@color/defaultWhite"
+				/>
 		</android.support.constraint.ConstraintLayout>
 
 		<LinearLayout
@@ -88,7 +147,6 @@
 				android:layout_height="wrap_content"
 				android:text="@string/direction_from"
 				/>
-
 
 		</LinearLayout>
 
