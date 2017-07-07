@@ -8,26 +8,16 @@ package com.veloroute.duffylamb.veloroute;
 
 public class BicycleCostings {
 
-	/**
-	 * Enumerate type of bikes recognised by the route finding API. Note that CITY is equivalent to a 'hybrid' bike.
-	 */
-	public enum BikeType {
-		ROAD, CITY, CROSS, MOUNTAIN
-	} //NB CITY == HYBRID
-
-
-
 	private BikeType bicycle_type;
 	private int cycling_speed; //Km/h
 	private double use_roads; // 0 == hate roads 1 == love roads
 	private double use_hills; // 0 == avoid hills 1 == no fear
-
 	/**
 	 * Constructor which uses the default route finding API values for bicycle costings
 	 */
 	public BicycleCostings() {
 
-		this(BicycleCostings.BikeType.ROAD, 25, 0.2, 0.8);
+		this(BicycleCostings.BikeType.ROAD, 25, 0.2, 1);
 	}
 
 	/**
@@ -135,4 +125,11 @@ public class BicycleCostings {
 		if (use_hills < 0.0 || use_hills>1.0) throw new IllegalArgumentException("Value must lie between 0.0 and 1.0 inclusive");
 		this.use_hills = use_hills;
 	}
+
+	/**
+	 * Enumerate type of bikes recognised by the route finding API. Note that CITY is equivalent to a 'hybrid' bike.
+	 */
+	public enum BikeType {
+		ROAD, CITY, CROSS, MOUNTAIN
+	} //NB CITY == HYBRID
 }
