@@ -18,7 +18,6 @@ import com.mapzen.android.graphics.MapzenMap;
 import com.mapzen.android.graphics.MapzenMapPeliasLocationProvider;
 import com.mapzen.android.graphics.OnMapReadyCallback;
 import com.mapzen.android.graphics.model.CinnabarStyle;
-import com.mapzen.android.graphics.model.Polyline;
 import com.mapzen.android.search.MapzenSearch;
 import com.mapzen.model.ValhallaLocation;
 import com.mapzen.pelias.gson.Feature;
@@ -185,8 +184,8 @@ public class mainScreen extends AppCompatActivity {
 				for (ValhallaLocation location : route.getGeometry()) {
 					coordinates.add(new LngLat(location.getLongitude(), location.getLatitude()));
 				}
-				Polyline polyline = new Polyline(coordinates);
-				map.addPolyline(polyline);
+				map.drawRouteLine(coordinates);
+
 			}
 
 			@Override
@@ -206,8 +205,7 @@ public class mainScreen extends AppCompatActivity {
 		map.clearSearchResults();
 		map.drawSearchResult(point);
 		map.setZoom(16);
-		routePlanner.enable();
-		routePlanner.setCurrentLocation(feature);
+		routePlanner.searchResult(feature);
 	}
 
 	public void checkLocationPermissions() {

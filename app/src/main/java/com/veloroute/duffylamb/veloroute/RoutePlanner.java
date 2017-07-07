@@ -17,7 +17,7 @@ import com.mapzen.valhalla.RouteCallback;
 import java.util.ArrayList;
 
 
-public class RoutePlanner {
+public class RoutePlanner implements View.OnLongClickListener {
 
 	private LinearLayout container;
 	private ArrayList<RouteLocation> routeLocations;
@@ -68,8 +68,6 @@ public class RoutePlanner {
 			public void onClick(View v) {
 
 				addStartPoint(currentLocation);
-				map.addMarker(new Marker(currentLocation.geometry.coordinates.get(0), currentLocation.geometry.coordinates.get(1)));
-				map.clearSearchResults();
 			}
 		});
 
@@ -78,12 +76,45 @@ public class RoutePlanner {
 			public void onClick(View v) {
 
 				addEndPoint(currentLocation);
-				map.addMarker(new Marker(currentLocation.geometry.coordinates.get(0), currentLocation.geometry.coordinates.get(1)));
-				map.clearSearchResults();
-
 			}
 		});
 
+
+	}
+
+	private void populateRouteLocations() {
+
+		ConstraintLayout start = (ConstraintLayout) ((Activity) context).findViewById(R.id.location_container_start);
+		ConstraintLayout end = (ConstraintLayout) ((Activity) context).findViewById(R.id.location_container_end);
+
+		if (routeLocations.isEmpty()) {
+			routeLocations.add(new RouteLocation(start));
+			routeLocations.add(new RouteLocation(end));
+
+			start.setOnLongClickListener(new View.OnLongClickListener() {
+				@Override
+				public boolean onLongClick(View v) {
+
+					hasStart = false;
+					routeLocations.get(0).removeFeature();
+					redrawMap();
+
+					return true; //Return true to prevent event propagating to any other listeners
+				}
+			});
+
+			end.setOnLongClickListener(new View.OnLongClickListener() {
+				@Override
+				public boolean onLongClick(View v) {
+
+					hasEnd = false;
+					routeLocations.get(routeLocations.size() - 1).removeFeature();
+					redrawMap();
+
+					return true;
+				}
+			});
+		}
 
 	}
 
@@ -92,25 +123,30 @@ public class RoutePlanner {
 		this.map = map;
 	}
 
-	public void enable() {
+	private void redrawMap() {
 
-		setVisibility(container, View.VISIBLE);
-	}
+		map.clearRouteLine();
+		map.removeMarker();
 
-	/**
-	 *
-	 * @param view The container view to be modified.
-	 * @param visibility
-	 *
-	 * @see android.view.View#setVisibility(int)
-	 */
-	private void setVisibility(View view, int visibility) {
+		if (!hasStart && !hasEnd) {
+			for (RouteLocation point : routeLocations) {
+				point.setVisibility(View.GONE);
+			}
+			routeLocations.clear();
+			return;
+		}
 
-		view.setVisibility(visibility);
+		for (RouteLocation point : routeLocations) {
+			if (point.getFeature() != null) {
+				map.addMarker(new Marker(point.getFeature().geometry.coordinates.get(0), point.getFeature().geometry.coordinates.get(1)));
+			}
+		}
+
 	}
 
 
 	//TODO Adjust smartVisibilty functions to function with the new locations UI
+
 	/**
 	 * Convenience method for temporarily hiding the route planner UI. When used in combination with <code>smartShow</code> allows the UI visibility to be toggled
 	 * without checking if the UI was visible in the first place. <strong>Multiple calls to this function will prevent <code>smartShow</code> from dsiplaying the UI</strong>
@@ -119,7 +155,7 @@ public class RoutePlanner {
 
 		smartVisibility = 0;
 		if (container.getVisibility() == View.VISIBLE) {
-			setVisibility(container, View.GONE);
+			container.setVisibility(View.GONE);
 			smartVisibility = 1;
 		}
 	}
@@ -131,14 +167,27 @@ public class RoutePlanner {
 	public void smartShow() {
 
 		if (smartVisibility == 1) {
-			setVisibility(container, View.VISIBLE);
+			container.setVisibility(View.VISIBLE);
 		}
 	}
 
-	public void setCurrentLocation(Feature feature) {
+	public void searchResult(Feature feature) {
 
 		currentLocation = feature;
+
+		if (!hasEnd && !hasStart) {
+			container.setVisibility(View.VISIBLE);
+		} else {
+			if (hasStart && hasEnd) {
+				//addMidpoint(feature); TODO
+			} else if (hasStart) {
+				addEndPoint(feature);
+			} else if (hasEnd) {
+				addStartPoint(feature);
+			}
+		}
 	}
+
 
 	public void setRouteCallback(RouteCallback callback) {
 
@@ -149,17 +198,35 @@ public class RoutePlanner {
 
 	public void addStartPoint(Feature location) {
 
+		populateRouteLocations();
+
+		map.clearSearchResults();
+		map.addMarker(new Marker(currentLocation.geometry.coordinates.get(0), currentLocation.geometry.coordinates.get(1)));
+
 		hasStart = true;
-		routeLocations.add(0, new RouteLocation((ConstraintLayout) ((Activity) context).findViewById(R.id.location_container_start), location));
-		routeLocations.add(new RouteLocation((ConstraintLayout) ((Activity) context).findViewById(R.id.location_container_end)));
+		routeLocations.get(0).setFeature(location);
+
+		if (hasEnd) {
+			fetchRoute();
+		}
+
 		container.setVisibility(View.GONE);
 	}
 
 	public void addEndPoint(Feature location) {
 
+		populateRouteLocations();
+
+		map.clearSearchResults();
+		map.addMarker(new Marker(currentLocation.geometry.coordinates.get(0), currentLocation.geometry.coordinates.get(1)));
+
 		hasEnd = true;
-		routeLocations.add(0, new RouteLocation((ConstraintLayout) ((Activity) context).findViewById(R.id.location_container_start)));
-		routeLocations.add(new RouteLocation((ConstraintLayout) ((Activity) context).findViewById(R.id.location_container_end), location));
+		routeLocations.get(routeLocations.size() - 1).setFeature(location);
+
+		if (hasStart) {
+			fetchRoute();
+		}
+
 		container.setVisibility(View.GONE);
 	}
 
@@ -181,4 +248,16 @@ public class RoutePlanner {
 		router.fetch();
 	}
 
+	@Override
+	public boolean onLongClick(View v) {
+
+		for (RouteLocation point : routeLocations) {
+			if (v == point.getContainer()) {
+				routeLocations.remove(point);
+				return true;
+			}
+		}
+
+		return false; //Return false here as the long click should remove a location, but none have been removed if here
+	}
 }

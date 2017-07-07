@@ -40,6 +40,14 @@ public class RouteLocation {
 
 		this.feature = feature;
 		this.BtnGPS.setVisibility(View.GONE);
+		this.TxtLocationName.setText(feature.properties.name);
+	}
+
+	public void removeFeature() {
+
+		this.feature = null;
+		this.BtnGPS.setVisibility(View.VISIBLE);
+		this.TxtLocationName.setText(R.string.location_placeholder);
 	}
 
 	/**
@@ -48,6 +56,16 @@ public class RouteLocation {
 	public Feature getFeature() {
 
 		return this.feature;
+	}
+
+	public ConstraintLayout getContainer() {
+
+		return this.container;
+	}
+
+	public void setVisibility(int visibility) {
+
+		this.container.setVisibility(visibility);
 	}
 
 }
