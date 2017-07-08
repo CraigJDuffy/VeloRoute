@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">Velo Route</string>
     <string name="search_hint">Search</string>
-	<string name="direction_from">Directions from here</string>
-	<string name="direction_to">Directions to here</string>
-	<string name="remove_point">Remove point</string>
-	<string name="use_location">Use my location</string>
-	<string name="location_placeholder">------|------</string>
+    <string name="direction_from">Directions from here</string>
+    <string name="direction_to">Directions to here</string>
+    <string name="remove_point">Remove point</string>
+    <string name="use_location">Use my location</string>
+    <string name="location_placeholder">------|------</string>
 </resources>

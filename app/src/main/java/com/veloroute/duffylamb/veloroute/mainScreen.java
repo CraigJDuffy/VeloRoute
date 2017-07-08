@@ -41,205 +41,204 @@ import retrofit2.Response;
 
 public class mainScreen extends AppCompatActivity {
 
-	private static final int PERMISSIONS_REQUEST_CODE = 1;
-	private MapzenMap map;
-	private boolean enableLocationOnResume = false;
+    private static final int PERMISSIONS_REQUEST_CODE = 1;
+    private MapzenMap map;
+    private boolean enableLocationOnResume = false;
 
-	private AutoCompleteListView listView;
-	private MapzenMapPeliasLocationProvider peliasLocationProvider;
+    private AutoCompleteListView listView;
+    private MapzenMapPeliasLocationProvider peliasLocationProvider;
 
-	private RoutePlanner routePlanner;
-	private Button BtnSet;
+    private RoutePlanner routePlanner;
+    private Button BtnSet;
 
+    {
+        @Override
+        public void onFocusChange (View v,boolean hasFocus){
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+        if (hasFocus) {
+            BtnSet.setVisibility(View.INVISIBLE);
+            routePlanner.smartHide();
+        } else {
+            BtnSet.setVisibility(View.VISIBLE);
+            routePlanner.smartShow();
+        }
+    }
+    }
 
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main_screen);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
 
-		listView = (AutoCompleteListView) findViewById(R.id.list_view);
-		AutoCompleteAdapter autoCompleteAdapter = new AutoCompleteAdapter(this, android.R.layout.simple_list_item_1);
-		listView.setAdapter(autoCompleteAdapter);
-		peliasLocationProvider = new MapzenMapPeliasLocationProvider(this);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main_screen);
 
-		final MapFragment mapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
-		mapFragment.getMapAsync(new OnMapReadyCallback() {
-			@Override
-			public void onMapReady(MapzenMap map) {
+        listView = (AutoCompleteListView) findViewById(R.id.list_view);
+        AutoCompleteAdapter autoCompleteAdapter = new AutoCompleteAdapter(this, android.R.layout.simple_list_item_1);
+        listView.setAdapter(autoCompleteAdapter);
+        peliasLocationProvider = new MapzenMapPeliasLocationProvider(this);
 
-				mainScreen.this.map = map;
-				map.setRotation(0f);
-				map.setZoom(0);
-				map.setTilt(0f);
-				map.setPosition(new LngLat(51.476852, -0.000500));
-				map.setZoomButtonsEnabled(true);
-				map.setCompassButtonEnabled(true);
+        final MapFragment mapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
+        mapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(MapzenMap map) {
 
-
-				checkLocationPermissions();
-				map.setStyle(new CinnabarStyle());
-
-				peliasLocationProvider.setMapzenMap(map);
-				routePlanner.setMap(map);
-			}
-		});
-
-
-		setupSearchView();
-		setupRoutePlanner();
-
-
-		BtnSet.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-
-				Intent myIntent = new Intent(mainScreen.this,
-						settingsScreen.class);
-				startActivity(myIntent);
-			}
-		});
-
-	}
-
-	@Override
-	protected void onPause() {
-
-		super.onPause();
-		if (map.isMyLocationEnabled()) {
-			map.setMyLocationEnabled(false);
-			enableLocationOnResume = true;
-		}
-	}
-
-	@Override
-	protected void onResume() {
-
-		super.onResume();
-		if (enableLocationOnResume) {
-			map.setMyLocationEnabled(true);
-		}
-	}
-
-	@Override
-	protected void onDestroy() {
-
-		super.onDestroy();
-	}
-
-	private void setupSearchView() {
-
-		MapzenSearch mapzenSearch = new MapzenSearch(this);
-		mapzenSearch.setLocationProvider(peliasLocationProvider);
-		PeliasSearchView searchView = (PeliasSearchView) findViewById(R.id.pelias_search_view);
-
-		searchView.setAutoCompleteListView(listView);
-		searchView.setPelias(mapzenSearch.getPelias());
-		searchView.setCallback(new Callback<Result>() {
-			@Override
-			public void onResponse(Call<Result> call, Response<Result> response) {
-
-				map.clearSearchResults();
-				for (Feature feature : response.body().getFeatures()) {
-					showSearchResult(feature);
-				}
-			}
-
-			@Override
-			public void onFailure(Call<Result> call, Throwable t) {
-
-			}
-		});
-
-		searchView.setIconifiedByDefault(false);
-		searchView.setQueryHint(this.getString(R.string.search_hint));
+                mainScreen.this.map = map;
+                map.setRotation(0f);
+                map.setZoom(0);
+                map.setTilt(0f);
+                map.setPosition(new LngLat(51.476852, -0.000500));
+                map.setZoomButtonsEnabled(true);
+                map.setCompassButtonEnabled(true);
 
 
-		searchView.setOnPeliasFocusChangeListener(new View.OnFocusChangeListener() {
-			@Override
-			public void onFocusChange(View v, boolean hasFocus) {
+                checkLocationPermissions();
+                map.setStyle(new CinnabarStyle());
 
-				if (hasFocus) {
-					BtnSet.setVisibility(View.INVISIBLE);
-					routePlanner.smartHide();
-				} else {
-					BtnSet.setVisibility(View.VISIBLE);
-					routePlanner.smartShow();
-				}
-			}
-		});
-	}
+                peliasLocationProvider.setMapzenMap(map);
+                routePlanner.setMap(map);
+            }
+        });
 
 
-	private void setupRoutePlanner() {
-
-		this.routePlanner = new RoutePlanner((LinearLayout) findViewById(R.id.route_planner));
-		routePlanner.setRouteCallback(new RouteCallback() {
-			@Override
-			public void success(@NotNull Route route) {
-
-				List<LngLat> coordinates = new ArrayList<>();
-				for (ValhallaLocation location : route.getGeometry()) {
-					coordinates.add(new LngLat(location.getLongitude(), location.getLatitude()));
-				}
-				map.drawRouteLine(coordinates);
-
-			}
-
-			@Override
-			public void failure(int i) {
-				// TODO: 02/07/2017
-				Log.e("Router Callback", "failure: " + Integer.toString(i));
-			}
-		});
-
-	}
+        setupSearchView();
+        setupRoutePlanner();
 
 
-	private void showSearchResult(Feature feature) {
+        BtnSet.setOnClickListener(new View.OnClickListener() {
 
-		LngLat point = new LngLat(feature.geometry.coordinates.get(0), feature.geometry.coordinates.get(1));
-		map.setPosition(point);
-		map.clearSearchResults();
-		map.drawSearchResult(point);
-		map.setZoom(16);
-		routePlanner.searchResult(feature);
-	}
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(mainScreen.this, settingsScreen.class);
+                startActivity(myIntent);
+            }
+        });
 
-	public void checkLocationPermissions() {
+    }
 
-		if (hasLocationPermission()) {
-			map.setMyLocationEnabled(true);
-		} else {
-			requestPermission();
-		}
+    @Override
+    protected void onPause() {
 
-	}
+        super.onPause();
+        if (map.isMyLocationEnabled()) {
+            map.setMyLocationEnabled(false);
+            enableLocationOnResume = true;
+        }
+    }
 
-	private boolean hasLocationPermission() {
+    @Override
+    protected void onResume() {
 
-		return (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) && (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED);
-	}
+        super.onResume();
+        if (enableLocationOnResume) {
+            map.setMyLocationEnabled(true);
+        }
+    }
 
-	private void requestPermission() {
+    @Override
+    protected void onDestroy() {
 
-		ActivityCompat.requestPermissions(this, new String[]{
-				Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION
-		}, PERMISSIONS_REQUEST_CODE);
-	}
-
-	@Override
-	public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onDestroy();
+    }
 
 
-		for (int i = 0; i < grantResults.length; i++) {
-			if (grantResults[i] == PackageManager.PERMISSION_DENIED) {
-				return;
-			}
-		}
-		map.setMyLocationEnabled(true);
-	}
+        searchView.setOnPeliasFocusChangeListener(new View.OnFocusChangeListener()
+
+    private void setupSearchView() {
+
+        MapzenSearch mapzenSearch = new MapzenSearch(this);
+        mapzenSearch.setLocationProvider(peliasLocationProvider);
+        PeliasSearchView searchView = (PeliasSearchView) findViewById(R.id.pelias_search_view);
+
+        searchView.setAutoCompleteListView(listView);
+        searchView.setPelias(mapzenSearch.getPelias());
+        searchView.setCallback(new Callback<Result>() {
+            @Override
+            public void onResponse(Call<Result> call, Response<Result> response) {
+
+                map.clearSearchResults();
+                for (Feature feature : response.body().getFeatures()) {
+                    showSearchResult(feature);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Result> call, Throwable t) {
+
+            }
+        });
+
+        searchView.setIconifiedByDefault(false);
+        searchView.setQueryHint(this.getString(R.string.search_hint));
+    })
+}
+
+    private void setupRoutePlanner() {
+
+        this.routePlanner = new RoutePlanner((LinearLayout) findViewById(R.id.route_planner));
+        routePlanner.setRouteCallback(new RouteCallback() {
+            @Override
+            public void success(@NotNull Route route) {
+
+                List<LngLat> coordinates = new ArrayList<>();
+                for (ValhallaLocation location : route.getGeometry()) {
+                    coordinates.add(new LngLat(location.getLongitude(), location.getLatitude()));
+                }
+                map.drawRouteLine(coordinates);
+
+            }
+
+            @Override
+            public void failure(int i) {
+                // TODO: 02/07/2017
+                Log.e("Router Callback", "failure: " + Integer.toString(i));
+            }
+        });
+
+    }
+
+
+    private void showSearchResult(Feature feature) {
+
+        LngLat point = new LngLat(feature.geometry.coordinates.get(0), feature.geometry.coordinates.get(1));
+        map.setPosition(point);
+        map.clearSearchResults();
+        map.drawSearchResult(point);
+        map.setZoom(16);
+        routePlanner.searchResult(feature);
+    }
+
+    public void checkLocationPermissions() {
+
+        if (hasLocationPermission()) {
+            map.setMyLocationEnabled(true);
+        } else {
+            requestPermission();
+        }
+
+    }
+
+    private boolean hasLocationPermission() {
+
+        return (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) && (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED);
+    }
+
+    private void requestPermission() {
+
+        ActivityCompat.requestPermissions(this, new String[]{
+                Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION
+        }, PERMISSIONS_REQUEST_CODE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+
+
+        for (int i = 0; i < grantResults.length; i++) {
+            if (grantResults[i] == PackageManager.PERMISSION_DENIED) {
+                return;
+            }
+        }
+        map.setMyLocationEnabled(true);
+    }
 
 
 }
