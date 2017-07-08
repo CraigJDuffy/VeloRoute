@@ -89,7 +89,7 @@ public class mainScreen extends AppCompatActivity {
 
         setupSearchView();
         setupRoutePlanner();
-
+        BtnSet = (Button) findViewById(R.id.btn_set);
 
         BtnSet.setOnClickListener(new View.OnClickListener() {
 
