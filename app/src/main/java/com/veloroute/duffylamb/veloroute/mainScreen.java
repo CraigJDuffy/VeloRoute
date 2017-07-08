@@ -51,19 +51,7 @@ public class mainScreen extends AppCompatActivity {
     private RoutePlanner routePlanner;
     private Button BtnSet;
 
-    {
-        @Override
-        public void onFocusChange (View v,boolean hasFocus){
 
-        if (hasFocus) {
-            BtnSet.setVisibility(View.INVISIBLE);
-            routePlanner.smartHide();
-        } else {
-            BtnSet.setVisibility(View.VISIBLE);
-            routePlanner.smartShow();
-        }
-    }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,7 +128,6 @@ public class mainScreen extends AppCompatActivity {
     }
 
 
-        searchView.setOnPeliasFocusChangeListener(new View.OnFocusChangeListener()
 
     private void setupSearchView() {
 
@@ -168,8 +155,21 @@ public class mainScreen extends AppCompatActivity {
 
         searchView.setIconifiedByDefault(false);
         searchView.setQueryHint(this.getString(R.string.search_hint));
-    })
-}
+
+        searchView.setOnPeliasFocusChangeListener(new View.OnFocusChangeListener() {
+
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    BtnSet.setVisibility(View.INVISIBLE);
+                    routePlanner.smartHide();
+                } else {
+                    BtnSet.setVisibility(View.VISIBLE);
+                    routePlanner.smartShow();
+                }
+            }
+        });
+    }
 
     private void setupRoutePlanner() {
 
