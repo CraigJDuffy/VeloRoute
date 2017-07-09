@@ -14,6 +14,7 @@
 		<item name="android:background">@color/breakline</item>
 		<item name="android:layout_marginTop">@dimen/breakline_margin</item>
 		<item name="android:layout_marginBottom">@dimen/breakline_margin</item>
+		<item name="layout_constraintBottom_toBottomOf">parent</item>
 	</style>
 
 </resources>

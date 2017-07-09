@@ -4,9 +4,11 @@ package com.veloroute.duffylamb.veloroute;
 import android.app.Activity;
 import android.content.Context;
 import android.support.constraint.ConstraintLayout;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 
 import com.mapzen.android.graphics.MapzenMap;
 import com.mapzen.android.graphics.model.Marker;
@@ -19,9 +21,10 @@ import java.util.ArrayList;
 
 public class RoutePlanner implements View.OnLongClickListener {
 
-	private LinearLayout container;
+	private LinearLayout promptContainer;
+	private ScrollView routeContainer;
 	private ArrayList<RouteLocation> routeLocations;
-	Button BtnDirectionTo;
+	private Button BtnDirectionTo;
 	private Button BtnDirectionFrom;
 
 	private RouteOptions routeOptions;
@@ -34,12 +37,14 @@ public class RoutePlanner implements View.OnLongClickListener {
 	private boolean hasStart;
 	private boolean hasEnd;
 
-	public RoutePlanner(LinearLayout container) {
+	public RoutePlanner(LinearLayout promptContainer) {
 
-		this.container = container;
+		this.context = promptContainer.getContext();
+		this.promptContainer = promptContainer;
+		this.routeContainer = (ScrollView) ((Activity) context).findViewById(R.id.route_container);
 
 
-		this.context = container.getContext();
+
 		this.smartVisibility = 0;
 		this.routeLocations = new ArrayList<>();
 		this.hasEnd = false;
@@ -60,8 +65,8 @@ public class RoutePlanner implements View.OnLongClickListener {
 
 	private void setupButtons() {
 
-		this.BtnDirectionFrom = (Button) container.findViewById(R.id.btn_direction_from);
-		this.BtnDirectionTo = (Button) container.findViewById(R.id.btn_direction_to);
+		this.BtnDirectionFrom = (Button) promptContainer.findViewById(R.id.btn_direction_from);
+		this.BtnDirectionTo = (Button) promptContainer.findViewById(R.id.btn_direction_to);
 
 		BtnDirectionFrom.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -84,10 +89,12 @@ public class RoutePlanner implements View.OnLongClickListener {
 
 	private void populateRouteLocations() {
 
+		if (routeLocations.isEmpty()) {
+
 		ConstraintLayout start = (ConstraintLayout) ((Activity) context).findViewById(R.id.location_container_start);
 		ConstraintLayout end = (ConstraintLayout) ((Activity) context).findViewById(R.id.location_container_end);
+			routeContainer.setVisibility(View.VISIBLE);
 
-		if (routeLocations.isEmpty()) {
 			routeLocations.add(new RouteLocation(start));
 			routeLocations.add(new RouteLocation(end));
 
@@ -97,7 +104,7 @@ public class RoutePlanner implements View.OnLongClickListener {
 
 					hasStart = false;
 					routeLocations.get(0).removeFeature();
-					redrawMap();
+					removeLocationFromUI();
 
 					return true; //Return true to prevent event propagating to any other listeners
 				}
@@ -109,7 +116,7 @@ public class RoutePlanner implements View.OnLongClickListener {
 
 					hasEnd = false;
 					routeLocations.get(routeLocations.size() - 1).removeFeature();
-					redrawMap();
+					removeLocationFromUI();
 
 					return true;
 				}
@@ -123,15 +130,13 @@ public class RoutePlanner implements View.OnLongClickListener {
 		this.map = map;
 	}
 
-	private void redrawMap() {
+	private void removeLocationFromUI() {
 
-		map.clearRouteLine();
+		map.removePolyline();
 		map.removeMarker();
 
 		if (!hasStart && !hasEnd) {
-			for (RouteLocation point : routeLocations) {
-				point.setVisibility(View.GONE);
-			}
+			routeContainer.setVisibility(View.GONE);
 			routeLocations.clear();
 			return;
 		}
@@ -141,6 +146,7 @@ public class RoutePlanner implements View.OnLongClickListener {
 				map.addMarker(new Marker(point.getFeature().geometry.coordinates.get(0), point.getFeature().geometry.coordinates.get(1)));
 			}
 		}
+
 
 	}
 
@@ -154,8 +160,8 @@ public class RoutePlanner implements View.OnLongClickListener {
 	public void smartHide() {
 
 		smartVisibility = 0;
-		if (container.getVisibility() == View.VISIBLE) {
-			container.setVisibility(View.GONE);
+		if (promptContainer.getVisibility() == View.VISIBLE) {
+			promptContainer.setVisibility(View.GONE);
 			smartVisibility = 1;
 		}
 	}
@@ -167,7 +173,7 @@ public class RoutePlanner implements View.OnLongClickListener {
 	public void smartShow() {
 
 		if (smartVisibility == 1) {
-			container.setVisibility(View.VISIBLE);
+			promptContainer.setVisibility(View.VISIBLE);
 		}
 	}
 
@@ -176,10 +182,10 @@ public class RoutePlanner implements View.OnLongClickListener {
 		currentLocation = feature;
 
 		if (!hasEnd && !hasStart) {
-			container.setVisibility(View.VISIBLE);
+			promptContainer.setVisibility(View.VISIBLE);
 		} else {
 			if (hasStart && hasEnd) {
-				//addMidpoint(feature); TODO
+				addMidPoint(1, feature);
 			} else if (hasStart) {
 				addEndPoint(feature);
 			} else if (hasEnd) {
@@ -201,7 +207,7 @@ public class RoutePlanner implements View.OnLongClickListener {
 		populateRouteLocations();
 
 		map.clearSearchResults();
-		map.addMarker(new Marker(currentLocation.geometry.coordinates.get(0), currentLocation.geometry.coordinates.get(1)));
+		map.addMarker(new Marker(location.geometry.coordinates.get(0), location.geometry.coordinates.get(1)));
 
 		hasStart = true;
 		routeLocations.get(0).setFeature(location);
@@ -210,7 +216,7 @@ public class RoutePlanner implements View.OnLongClickListener {
 			fetchRoute();
 		}
 
-		container.setVisibility(View.GONE);
+		promptContainer.setVisibility(View.GONE);
 	}
 
 	public void addEndPoint(Feature location) {
@@ -218,7 +224,7 @@ public class RoutePlanner implements View.OnLongClickListener {
 		populateRouteLocations();
 
 		map.clearSearchResults();
-		map.addMarker(new Marker(currentLocation.geometry.coordinates.get(0), currentLocation.geometry.coordinates.get(1)));
+		map.addMarker(new Marker(location.geometry.coordinates.get(0), location.geometry.coordinates.get(1)));
 
 		hasEnd = true;
 		routeLocations.get(routeLocations.size() - 1).setFeature(location);
@@ -227,19 +233,37 @@ public class RoutePlanner implements View.OnLongClickListener {
 			fetchRoute();
 		}
 
-		container.setVisibility(View.GONE);
+		promptContainer.setVisibility(View.GONE);
 	}
 
-//	/**
-//	 * @param index    Index of the location in the desired route. Starts at at 0, representing the route start point
-//	 * @param location
-//	 */
-//	public void addMidPoint(int index, Feature location) {
-//
-//		routeLocations.add(index, location);
-//	}
+	/**
+	 * @param index    Index of the location in the desired route. Starts at at 0, representing the route start point
+	 * @param location
+	 *
+	 * @see <a href="https://developer.android.com/reference/android/view/LayoutInflater.html#inflate(int, android.view.ViewGroup)">Layout Inflator</a>
+	 * @see <a href="https://developer.android.com/reference/android/view/ViewGroup.html#addView(android.view.View, int)">AddView by index</a>
+	 * @see <a href="https://possiblemobile.com/2013/05/layout-inflation-as-intended/">Inflate layout as intended</a>
+	 */
+	public void addMidPoint(int index, Feature location) {
+
+		map.clearSearchResults();
+		map.addMarker(new Marker(location.geometry.coordinates.get(0), location.geometry.coordinates.get(1)));
+
+		LayoutInflater inflater = LayoutInflater.from(context);
+		LinearLayout root = (LinearLayout) routeContainer.getChildAt(0);
+
+		ConstraintLayout routeLocationView = (ConstraintLayout) inflater.inflate(R.layout.route_location_view, root, false); //Inflate the XMl with the child LinearLayout of MaxSizeScrollView as root, auto-attach = false to allow positioning
+		routeLocationView.setOnLongClickListener(this);
+
+		root.addView(routeLocationView, index);
+		routeLocations.add(index, new RouteLocation(routeLocationView, location));
+
+		fetchRoute();
+	}
 
 	private void fetchRoute() {
+
+		router.clearLocations();
 
 		for (RouteLocation point : routeLocations) {
 			router.setLocation(new double[]{point.getFeature().geometry.coordinates.get(1), point.getFeature().geometry.coordinates.get(0)});
@@ -251,13 +275,16 @@ public class RoutePlanner implements View.OnLongClickListener {
 	@Override
 	public boolean onLongClick(View v) {
 
-		for (RouteLocation point : routeLocations) {
-			if (v == point.getContainer()) {
-				routeLocations.remove(point);
-				return true;
-			}
-		}
+		LinearLayout root = (LinearLayout) routeContainer.getChildAt(0);
+		int index = root.indexOfChild(v);
 
+		if (index >= 0) {
+			routeLocations.remove(index);
+			root.removeViewAt(index);
+			removeLocationFromUI();
+			fetchRoute();
+			return true;
+		}
 		return false; //Return false here as the long click should remove a location, but none have been removed if here
 	}
 }

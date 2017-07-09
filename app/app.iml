@@ -149,5 +149,6 @@
     <orderEntry type="library" exported="" name="tangram-0.6.3" level="project" />
     <orderEntry type="library" exported="" name="auto-parcel-0.3.1" level="project" />
     <orderEntry type="library" exported="" name="dagger-2.0" level="project" />
+    <orderEntry type="library" exported="" name="android-android-25" level="project" />
   </component>
 </module>

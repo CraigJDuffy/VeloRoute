@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	>
+
+	<ImageView
+		android:id="@+id/location_pointer"
+		android:layout_width="wrap_content"
+		android:layout_height="match_parent"
+		android:src="@mipmap/ic_location_mid"
+		app:layout_constraintLeft_toLeftOf="parent"/>
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:paddingLeft="@dimen/mz_compass_button_margin_left"
+		android:text="@string/location_placeholder"
+		android:textSize="@dimen/location_size_large"
+		app:layout_constraintLeft_toRightOf="@id/location_pointer"/>
+
+	<ImageButton
+		android:layout_width="wrap_content"
+		android:layout_height="match_parent"
+		android:background="@color/defaultWhite"
+		android:src="@mipmap/ic_my_location"
+		app:layout_constraintRight_toRightOf="parent"/>
+
+	<View style="@style/HorizontalBreakline"/>
+</android.support.constraint.ConstraintLayout>

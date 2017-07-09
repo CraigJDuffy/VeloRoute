@@ -24,8 +24,6 @@ public class RouteLocation {
 		this.container = container;
 		this.TxtLocationName = (TextView) container.getChildAt(1);
 		this.BtnGPS = (ImageButton) container.getChildAt(2);
-		this.container.setVisibility(View.VISIBLE);
-
 	}
 
 	public RouteLocation(ConstraintLayout container, Feature feature) {

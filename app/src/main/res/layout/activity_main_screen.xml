@@ -1,140 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:focusableInTouchMode="true"
-    tools:context="com.veloroute.duffylamb.veloroute.mainScreen"
-    tools:layout_editor_absoluteX="0dp"
-    tools:layout_editor_absoluteY="0dp">
+											 xmlns:app="http://schemas.android.com/apk/res-auto"
+											 xmlns:tools="http://schemas.android.com/tools"
+											 android:layout_width="match_parent"
+											 android:layout_height="match_parent"
+											 android:focusableInTouchMode="true"
+	>
 
-    <!--match_parent == fill_parent. Fill is deprecated.
-    match_parent cannot be used on children of a constraint layout.
-    0dp is equivalent, apparently
-     https://stackoverflow.com/questions/43452384/android-studio-keeps-replacing-match-parent-with-fixed-dp-value-->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+	<!--match_parent == fill_parent. Fill is deprecated.
+	match_parent cannot be used on children of a constraint layout.
+	0dp is equivalent, apparently
+	 https://stackoverflow.com/questions/43452384/android-studio-keeps-replacing-match-parent-with-fixed-dp-value-->
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:orientation="vertical">
 
-        <android.support.constraint.ConstraintLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="1">
+		<android.support.constraint.ConstraintLayout
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:layout_weight="1">
 
-            <fragment
-                android:id="@+id/map_fragment"
-                android:name="com.mapzen.android.graphics.MapFragment"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                tools:layout="@layout/mz_fragment_map" />
+			<fragment
+				android:id="@+id/map_fragment"
+				android:name="com.mapzen.android.graphics.MapFragment"
+				android:layout_width="fill_parent"
+				android:layout_height="fill_parent"
+				tools:layout="@layout/mz_fragment_map"/>
 
-            <com.mapzen.pelias.widget.AutoCompleteListView
-                android:id="@+id/list_view"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_marginTop="@dimen/search_view_height"
-                android:background="@color/mz_white"
-                android:visibility="gone" />
+			<com.mapzen.pelias.widget.AutoCompleteListView
+				android:id="@+id/list_view"
+				android:layout_width="fill_parent"
+				android:layout_height="fill_parent"
+				android:layout_marginTop="@dimen/search_view_height"
+				android:background="@color/mz_white"
+				android:visibility="gone"/>
 
-            <com.mapzen.pelias.widget.PeliasSearchView
-                android:id="@+id/pelias_search_view"
-                android:layout_width="300dp"
-                android:layout_height="@dimen/search_view_height"
-                android:layout_marginTop="@dimen/mz_find_me_button_margin_top" />
+			<com.mapzen.pelias.widget.PeliasSearchView
+				android:id="@+id/pelias_search_view"
+				android:layout_width="300dp"
+				android:layout_height="@dimen/search_view_height"
+				android:layout_marginTop="@dimen/mz_find_me_button_margin_top"/>
 
-            <Button
-                android:id="@+id/btn_set"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/mz_zoom_out_button_margin_bottom"
-                android:layout_marginRight="@dimen/settings_view_margin_right"
-                android:text="Settings"
-                app:layout_constraintBottom_toBottomOf="@id/map_fragment"
-                app:layout_constraintRight_toRightOf="@id/map_fragment" />
-        </android.support.constraint.ConstraintLayout>
+			<Button
+				android:id="@+id/btn_set"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginBottom="@dimen/mz_zoom_out_button_margin_bottom"
+				android:layout_marginRight="@dimen/settings_view_margin_right"
+				android:text="Settings"
+				app:layout_constraintBottom_toBottomOf="@id/map_fragment"
+				app:layout_constraintRight_toRightOf="@id/map_fragment"/>
 
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/location_container_start"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone">
+		</android.support.constraint.ConstraintLayout>
 
-            <ImageView
-                android:id="@+id/location_pointer_start"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:src="@mipmap/ic_location_start"
-                app:layout_constraintLeft_toLeftOf="parent" />
+		<com.veloroute.duffylamb.veloroute.MaxSizeScrollView
+			android:id="@+id/route_container"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:visibility="gone"
+			>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/mz_compass_button_margin_left"
-                android:text="@string/location_placeholder"
-                android:textSize="@dimen/location_size_large"
-                app:layout_constraintLeft_toRightOf="@id/location_pointer_start" />
+			<LinearLayout
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical">
 
-            <ImageButton
-                android:id="@+id/location_gps_start"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="@color/defaultWhite"
-                android:src="@mipmap/ic_my_location"
-                app:layout_constraintRight_toRightOf="parent" />
-        </android.support.constraint.ConstraintLayout>
+				<android.support.constraint.ConstraintLayout
+					android:id="@+id/location_container_start"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					>
 
-        <View style="@style/HorizontalBreakline" />
+					<ImageView
+						android:id="@+id/location_pointer_start"
+						android:layout_width="wrap_content"
+						android:layout_height="match_parent"
+						android:src="@mipmap/ic_location_start"
+						app:layout_constraintLeft_toLeftOf="parent"/>
 
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/location_container_end"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone">
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:paddingLeft="@dimen/mz_compass_button_margin_left"
+						android:text="@string/location_placeholder"
+						android:textSize="@dimen/location_size_large"
+						app:layout_constraintLeft_toRightOf="@id/location_pointer_start"/>
 
-            <ImageView
-                android:id="@+id/location_pointer_end"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:src="@mipmap/ic_location_end"
-                app:layout_constraintLeft_toLeftOf="parent" />
+					<ImageButton
+						android:id="@+id/location_gps_start"
+						android:layout_width="wrap_content"
+						android:layout_height="match_parent"
+						android:background="@color/defaultWhite"
+						android:src="@mipmap/ic_my_location"
+						app:layout_constraintRight_toRightOf="parent"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/mz_compass_button_margin_left"
-                android:text="@string/location_placeholder"
-                android:textSize="@dimen/location_size_large"
-                app:layout_constraintLeft_toRightOf="@id/location_pointer_end" />
+					<View style="@style/HorizontalBreakline"/>
 
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="@color/defaultWhite"
-                android:src="@mipmap/ic_my_location"
-                app:layout_constraintRight_toRightOf="parent" />
-        </android.support.constraint.ConstraintLayout>
+				</android.support.constraint.ConstraintLayout>
 
-        <LinearLayout
-            android:id="@+id/route_planner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone">
 
-            <Button
-                android:id="@+id/btn_direction_to"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/direction_to" />
+				<android.support.constraint.ConstraintLayout
+					android:id="@+id/location_container_end"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content">
 
-            <Button
-                android:id="@+id/btn_direction_from"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/direction_from" />
+					<ImageView
+						android:id="@+id/location_pointer_end"
+						android:layout_width="wrap_content"
+						android:layout_height="match_parent"
+						android:src="@mipmap/ic_location_end"
+						app:layout_constraintLeft_toLeftOf="parent"/>
 
-        </LinearLayout>
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:paddingLeft="@dimen/mz_compass_button_margin_left"
+						android:text="@string/location_placeholder"
+						android:textSize="@dimen/location_size_large"
+						app:layout_constraintLeft_toRightOf="@id/location_pointer_end"/>
 
-    </LinearLayout>
+					<ImageButton
+						android:layout_width="wrap_content"
+						android:layout_height="match_parent"
+						android:background="@color/defaultWhite"
+						android:src="@mipmap/ic_my_location"
+						app:layout_constraintRight_toRightOf="parent"/>
+				</android.support.constraint.ConstraintLayout>
+
+			</LinearLayout>
+		</com.veloroute.duffylamb.veloroute.MaxSizeScrollView>
+
+		<LinearLayout
+			android:id="@+id/route_planner"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:visibility="gone">
+
+			<Button
+				android:id="@+id/btn_direction_to"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/direction_to"/>
+
+			<Button
+				android:id="@+id/btn_direction_from"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/direction_from"/>
+
+		</LinearLayout>
+
+	</LinearLayout>
 </android.support.constraint.ConstraintLayout>
