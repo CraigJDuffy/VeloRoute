@@ -29,5 +29,6 @@ dependencies {
     compile 'com.mapzen:mapzen-android-sdk:1.3.2'
     compile 'com.mapzen:mapzen-core:1.4.0'
     compile 'com.mapzen:mapzen-places-api:1.4.0'
+    compile 'com.mapzen.android:lost:3.0.2'
     testCompile 'junit:junit:4.12'
 }

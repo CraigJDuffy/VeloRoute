@@ -2,11 +2,11 @@ package com.veloroute.duffylamb.veloroute;
 
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -46,23 +46,24 @@ public class mainScreen extends AppCompatActivity {
 	private MapzenMap map;
 	private boolean enableLocationOnResume = false;
 
-	private AutoCompleteListView listView;
+
 	private MapzenMapPeliasLocationProvider peliasLocationProvider;
 
 	private RoutePlanner routePlanner;
 	private Button BtnSet;
 
+	public static Context APPCONTEXT;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_screen);
+		APPCONTEXT = this;
 
-		listView = (AutoCompleteListView) findViewById(R.id.list_view);
-		AutoCompleteAdapter autoCompleteAdapter = new AutoCompleteAdapter(this, android.R.layout.simple_list_item_1);
-		listView.setAdapter(autoCompleteAdapter);
 		peliasLocationProvider = new MapzenMapPeliasLocationProvider(this);
+		setupSearchView();
+		setupRoutePlanner();
 
 		final MapFragment mapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
 		mapFragment.getMapAsync(new OnMapReadyCallback() {
@@ -87,8 +88,7 @@ public class mainScreen extends AppCompatActivity {
 		});
 
 
-		setupSearchView();
-		setupRoutePlanner();
+
 		BtnSet = (Button) findViewById(R.id.btn_set);
 
 		BtnSet.setOnClickListener(new View.OnClickListener() {
@@ -131,12 +131,20 @@ public class mainScreen extends AppCompatActivity {
 
 	private void setupSearchView() {
 
+		AutoCompleteListView listView = (AutoCompleteListView) findViewById(R.id.list_view);
+		listView.setAdapter(new AutoCompleteAdapter(this, android.R.layout.simple_list_item_1));
+
+
 		MapzenSearch mapzenSearch = new MapzenSearch(this);
 		mapzenSearch.setLocationProvider(peliasLocationProvider);
 		PeliasSearchView searchView = (PeliasSearchView) findViewById(R.id.pelias_search_view);
 
 		searchView.setAutoCompleteListView(listView);
 		searchView.setPelias(mapzenSearch.getPelias());
+		searchView.setIconifiedByDefault(false);
+		searchView.setQueryHint(this.getString(R.string.search_hint));
+
+
 		searchView.setCallback(new Callback<Result>() {
 			@Override
 			public void onResponse(Call<Result> call, Response<Result> response) {
@@ -153,8 +161,6 @@ public class mainScreen extends AppCompatActivity {
 			}
 		});
 
-		searchView.setIconifiedByDefault(false);
-		searchView.setQueryHint(this.getString(R.string.search_hint));
 
 		searchView.setOnPeliasFocusChangeListener(new View.OnFocusChangeListener() {
 
@@ -211,7 +217,7 @@ public class mainScreen extends AppCompatActivity {
 
 	public void checkLocationPermissions() {
 
-		if (hasLocationPermission()) {
+		if (LocationProvider.getInstance().hasPermission()) {
 			map.setMyLocationEnabled(true);
 		} else {
 			requestPermission();
@@ -219,10 +225,6 @@ public class mainScreen extends AppCompatActivity {
 
 	}
 
-	private boolean hasLocationPermission() {
-
-		return (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) && (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED);
-	}
 
 	private void requestPermission() {
 

@@ -3,7 +3,6 @@ package com.veloroute.duffylamb.veloroute;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.ScrollView;
 
 /**
@@ -57,8 +56,6 @@ public class MaxSizeScrollView extends ScrollView {
 	 * @return
 	 */
 	private int DptoPx(int dp) {
-
-		Log.e("DPtoPx", "DP:" + dp);
 
 		float scale = getResources().getDisplayMetrics().density;
 		return (int) (dp * scale + 0.5f);

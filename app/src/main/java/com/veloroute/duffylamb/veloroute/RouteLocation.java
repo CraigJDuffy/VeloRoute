@@ -19,16 +19,17 @@ public class RouteLocation {
 
 	private Feature feature;
 
-	public RouteLocation(ConstraintLayout container) {
+	public RouteLocation(ConstraintLayout container, View.OnClickListener GPSListener) {
 
 		this.container = container;
 		this.TxtLocationName = (TextView) container.getChildAt(1);
 		this.BtnGPS = (ImageButton) container.getChildAt(2);
+		this.BtnGPS.setOnClickListener(GPSListener);
 	}
 
-	public RouteLocation(ConstraintLayout container, Feature feature) {
+	public RouteLocation(ConstraintLayout container, View.OnClickListener GPSListener, Feature feature) {
 
-		this(container);
+		this(container, GPSListener);
 		this.TxtLocationName.setText(feature.properties.name);
 		this.feature = feature;
 		this.BtnGPS.setVisibility(View.GONE);
@@ -56,14 +57,5 @@ public class RouteLocation {
 		return this.feature;
 	}
 
-	public ConstraintLayout getContainer() {
-
-		return this.container;
-	}
-
-	public void setVisibility(int visibility) {
-
-		this.container.setVisibility(visibility);
-	}
 
 }
